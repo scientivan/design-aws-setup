@@ -1,0 +1,3 @@
+CONTAINER ID   IMAGE            COMMAND              CREATED          STATUS          PORTS                                       NAMES
+c05bee3bcfe4   ticket-service   "python -u app.py"   29 seconds ago   Up 28 seconds   0.0.0.0:8082->8082/tcp, :::8082->8082/tcp   ticket-service
+2c370ac34c3c   event-service    "python -u app.py"   29 seconds ago   Up 28 seconds   0.0.0.0:8081->8081/tcp, :::8081->8081/tcp   event-service

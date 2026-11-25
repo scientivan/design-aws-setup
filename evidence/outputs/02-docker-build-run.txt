@@ -1,0 +1,11 @@
+Source: ./scripts/run-local.sh on Cloud9 MicroservicesIDE, 2026-11-25 ~16:10 UTC.
+Full BuildKit log stays at ~/environment/ticketing-track-b/evidence/02-docker-build-run.txt on Cloud9.
+Excerpt:
+#2 [internal] load metadata for public.ecr.aws/docker/library/python:3.12-alpine
+#5 [1/3] FROM public.ecr.aws/docker/library/python:3.12-alpine@sha256:c5ba3deef00c7758561a0f03c26f44f10589263d40e732b8748e0d1f38f6dd89
+...
+2c370ac34c3c6f8b5f9522fdd8e583afddba469bef1f43a2bd0525eae115760a   (event-service container id)
+c05bee3bcfe4a4f5c1eb9f8d2359bc394ba825e5af5f1928333bd2126c1a1ea5   (ticket-service container id)
+NAMES            IMAGE            STATUS         PORTS
+ticket-service   ticket-service   Up 2 seconds   0.0.0.0:8082->8082/tcp, :::8082->8082/tcp
+event-service    event-service    Up 2 seconds   0.0.0.0:8081->8081/tcp, :::8081->8081/tcp

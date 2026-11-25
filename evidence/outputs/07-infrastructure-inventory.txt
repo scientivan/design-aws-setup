@@ -1,0 +1,37 @@
+Collected 2026-11-25 ~16:15 UTC from Cloud9 with AWS CLI (describe-instances, describe-vpcs,
+describe-subnets, describe-security-groups, iam list-roles). Region us-east-1. Columns condensed.
+
+EC2 INSTANCES (both in LabVPC / Public Subnet1, us-east-1a)
+- i-0c531ff0e3a3085d2  aws-cloud9-MicroservicesIDE-...  t3.small  running  private 10.16.10.227  public 52.201.249.5
+    SG aws-cloud9-MicroservicesIDE-...-InstanceSecurityGroup (sg-010fc165085e65785)
+    -> Docker host for event-service (:8081) and ticket-service (:8082). IAM instance profile: None.
+- i-0124b933bcfef58c8  MonolithicAppServer  t2.micro  running  private 10.16.10.229  public 54.87.155.174
+    SG ...-Ec2AppNodeSecurityGroup  (pre-provisioned by the lab, not part of the ticketing app)
+
+VPCs
+- vpc-05d36490b4477547d  LabVPC   10.16.0.0/16   <- used
+- vpc-0f74cea896d6e44da  default  172.31.0.0/16  (unused)
+
+LabVPC SUBNETS
+- Public Subnet1   subnet-0490cce1430518709  10.16.10.0/24  us-east-1a  auto public IP  <- Cloud9 host
+- Public Subnet2   subnet-0c97dc224539a862b  10.16.20.0/24  us-east-1b  auto public IP
+- Private Subnet 1 subnet-0b02c7e44aa276e4f  10.16.30.0/24  us-east-1a
+- Private Subnet 2 subnet-0d88932a2c097118d  10.16.40.0/24  us-east-1b
+
+CLOUD9 SECURITY GROUP sg-010fc165085e65785 inbound rules
+- TCP 22 from 35.172.155.192/27 and 35.172.155.96/27 (AWS Cloud9 service IP ranges, SSH connection type)
+- Ports 8081/8082 are NOT open to the internet. Services were tested from inside the instance (localhost).
+
+ECR (private registry 339712824643.dkr.ecr.us-east-1.amazonaws.com)
+- ticketing/event-service   tag v1  sha256:73e8e3f201e3b4c543c43a151b70f93754395efc35ad44294c1d13f45768b083  18,052,827 bytes  scanOnPush=true  AES-256
+- ticketing/ticket-service  tag v1  sha256:2cce6dc1166b217371adca86f142271e561d7d575d5e52cac877ebcc18f391d2  18,053,695 bytes  scanOnPush=true  AES-256
+
+IAM
+- Console/CLI identity: assumed-role/voclabs (AWS Academy lab role). Cloud9 uses AWS managed temporary credentials of this role.
+- Docker -> ECR auth: `aws ecr get-login-password` (short-lived token), no static keys stored in repo.
+- Lab-provided roles present: voclabs, DeployRole, PipelineRole, ...-EC2NodeInstanceRole, AWSServiceRoleForAWSCloud9, etc.
+- Lab restriction: creating IAM roles is not allowed. Cloud9 with SSM connection failed because it needs new IAM roles.
+
+BLOCKED / RESTRICTED (observed)
+- CloudShell: "Unable to create the environment. This may be due to insufficient permissions..."
+- Cloud9 with non-lab settings (t2.micro, SSM, other name): "You don't have the permission required to perform this operation."

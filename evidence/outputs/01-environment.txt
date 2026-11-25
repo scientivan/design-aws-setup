@@ -1,0 +1,8 @@
+Wed Nov 25 16:11:07 UTC 2026
+
+arn:aws:sts::339712824643:assumed-role/voclabs/user5639523=<email-redacted>
+instance-type: (IMDS not returned; Cloud9 env created as t3.small, see console screenshot)
+NAME="Amazon Linux"
+VERSION="2023"
+Docker version 25.0.14, build 0bab007
+aws-cli/2.41.0 Python/3.14.8 Linux/6.18.62-127.179.amzn2023.x86_64 exe/x86_64.amzn.2023

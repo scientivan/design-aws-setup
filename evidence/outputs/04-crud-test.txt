@@ -1,0 +1,36 @@
+
+### GET http://localhost:8081/health
+{"service": "event-service", "status": "ok"}
+HTTP 200
+
+### GET http://localhost:8082/health
+{"service": "ticket-service", "status": "ok", "eventServiceUrl": "http://event-service:8081"}
+HTTP 200
+
+### GET http://localhost:8081/events
+[{"eventId": "evt-001", "name": "Campus Music Night", "date": "2026-12-12", "venue": "Grha Sabha Pramana", "capacity": 500, "price": 75000}, {"eventId": "evt-002", "name": "Cloud Computing Talk", "date": "2026-12-19", "venue": "DTETI Auditorium", "capacity": 150, "price": 0}, {"eventId": "evt-003", "name": "Startup Demo Day", "date": "2027-01-09", "venue": "UGM Innovation Hub", "capacity": 300, "price": 25000}]
+HTTP 200
+
+### CREATE  POST http://localhost:8082/tickets
+{"ticketId": "tkt-9cc101e0", "eventId": "evt-001", "eventName": "Campus Music Night", "buyerName": "Test Buyer", "buyerEmail": "buyer@example.com", "quantity": 2, "totalPrice": 150000, "status": "BOOKED", "createdAt": "2026-11-25T16:11:09+00:00", "updatedAt": "2026-11-25T16:11:09+00:00"}
+
+### READ    GET http://localhost:8082/tickets/tkt-9cc101e0
+{"ticketId": "tkt-9cc101e0", "eventId": "evt-001", "eventName": "Campus Music Night", "buyerName": "Test Buyer", "buyerEmail": "buyer@example.com", "quantity": 2, "totalPrice": 150000, "status": "BOOKED", "createdAt": "2026-11-25T16:11:09+00:00", "updatedAt": "2026-11-25T16:11:09+00:00"}
+HTTP 200
+
+### UPDATE  PUT http://localhost:8082/tickets/tkt-9cc101e0
+{"ticketId": "tkt-9cc101e0", "eventId": "evt-001", "eventName": "Campus Music Night", "buyerName": "Test Buyer", "buyerEmail": "buyer@example.com", "quantity": 2, "totalPrice": 150000, "status": "PAID", "createdAt": "2026-11-25T16:11:09+00:00", "updatedAt": "2026-11-25T16:11:09+00:00"}
+HTTP 200
+
+### DELETE  DELETE http://localhost:8082/tickets/tkt-9cc101e0
+HTTP 204
+
+### READ after delete (expect 404)
+{"error": "ticket not found"}
+HTTP 404
+
+### CREATE with unknown event (expect 404 from event-service check)
+{"error": "event not found"}
+HTTP 404
+
+CRUD_TEST_DONE

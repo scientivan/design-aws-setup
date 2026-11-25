@@ -1,0 +1,5 @@
+REPOSITORY                                                              TAG       IMAGE ID       CREATED          SIZE
+339712824643.dkr.ecr.us-east-1.amazonaws.com/ticketing/ticket-service   v1        d0b8878f159a   46 seconds ago   48.9MB
+ticket-service                                                          latest    d0b8878f159a   46 seconds ago   48.9MB
+event-service                                                           latest    5da4583c7584   46 seconds ago   48.9MB
+339712824643.dkr.ecr.us-east-1.amazonaws.com/ticketing/event-service    v1        5da4583c7584   46 seconds ago   48.9MB

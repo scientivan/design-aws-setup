@@ -1,0 +1,25 @@
+Login Succeeded
+339712824643.dkr.ecr.us-east-1.amazonaws.com/ticketing/event-service
+The push refers to repository [339712824643.dkr.ecr.us-east-1.amazonaws.com/ticketing/event-service]
+67c0b16272ff: Pushed
+33245a72efc0: Pushed
+18ebb02c2337: Pushed
+d6c38381cc85: Pushed
+75f1d9657d88: Pushed
+c55c05421254: Pushed
+v1: digest: sha256:73e8e3f201e3b4c543c43a151b70f93754395efc35ad44294c1d13f45768b083 size: 1570
+339712824643.dkr.ecr.us-east-1.amazonaws.com/ticketing/ticket-service
+The push refers to repository [339712824643.dkr.ecr.us-east-1.amazonaws.com/ticketing/ticket-service]
+3321490ba070: Pushed
+18ebb02c2337: Pushed
+33245a72efc0: Pushed
+d6c38381cc85: Pushed
+75f1d9657d88: Pushed
+c55c05421254: Pushed
+v1: digest: sha256:2cce6dc1166b217371adca86f142271e561d7d575d5e52cac877ebcc18f391d2 size: 1571
+
+aws ecr describe-images ticketing/event-service   -> tag v1, pushedAt 2026-11-25T16:11:17Z, sizeBytes 18052827
+aws ecr describe-images ticketing/ticket-service  -> tag v1, pushedAt 2026-11-25T16:11:22Z, sizeBytes 18053695
+ECR_PUSH_DONE
+
+("Preparing/Waiting" progress lines and the docker login plaintext-credential warning trimmed.)
