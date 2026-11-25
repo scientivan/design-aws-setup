@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# End-to-end test: health checks, event lookup, and the 4 Ticket CRUD endpoints.
+# Uji pemeriksaan layanan, pencarian acara, dan empat endpoint CRUD Ticket.
 set -euo pipefail
 E=${EVENT_URL:-http://localhost:8081}
 T=${TICKET_URL:-http://localhost:8082}

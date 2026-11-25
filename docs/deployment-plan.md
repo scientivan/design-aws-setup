@@ -1,24 +1,24 @@
-# Deployment plan
+# Rencana deployment
 
-## Phase 1 (Week 12, done)
+## Tahap 1 (Minggu 12, selesai)
 
-1. Cloud9 environment `MicroservicesIDE` was created as an EC2 `t3.small` instance with Amazon Linux 2023 in LabVPC, Public Subnet1, using the SSH connection type. The lab only accepts these exact settings.
-2. The code was uploaded to Cloud9 and both images were built with `scripts/run-local.sh`. The base image comes from `public.ecr.aws/docker/library/python:3.12-alpine` to avoid Docker Hub pull limits.
-3. Both containers run on the Docker bridge network `ticketing-net`. Port 8081 is event-service and port 8082 is ticket-service. The ports are published on the host but are not opened in the security group, so testing was done from inside the instance.
-4. `scripts/test-crud.sh` passed. Create returned 201, read 200, update 200, delete 204, and read after delete 404.
-5. `scripts/push-ecr.sh` created the private repositories `ticketing/event-service` and `ticketing/ticket-service` with scan on push enabled, then pushed tag `v1` of each image.
+1. Lingkungan Cloud9 `MicroservicesIDE` memakai instance EC2 `t3.small` dengan Amazon Linux 2023 di LabVPC, Public Subnet1, dan koneksi SSH. Lab membatasi konfigurasi yang dapat dipakai.
+2. Kode diunggah ke Cloud9. `scripts/run-local.sh` membangun dua image dengan image dasar `public.ecr.aws/docker/library/python:3.12-alpine` untuk menghindari batas penarikan image Docker Hub.
+3. Kedua container berjalan pada jaringan bridge Docker `ticketing-net`. Host memublikasikan port 8081 untuk event-service dan 8082 untuk ticket-service. Security group tidak membuka kedua port ke internet. Uji dilakukan dari dalam instance.
+4. `scripts/test-crud.sh` mencatat respons pemesanan saat create, 200 saat baca dan ubah, 204 saat hapus, serta 404 saat membaca kembali tiket yang sudah dihapus. Respons create 201 terlihat pada demo terpisah dalam tangkapan layar Cloud9.
+5. `scripts/push-ecr.sh` membuat repositori privat `ticketing/event-service` dan `ticketing/ticket-service` dengan pemindaian saat push, lalu mengunggah tag `v1` untuk masing-masing image.
 
-## Phase 2 (planned)
+## Tahap 2 (rencana)
 
-1. Replace in-memory storage with a persistent store so tickets survive container restarts. The simplest option inside this lab is a Docker volume with SQLite on the EC2 host. A managed database is a later option if the lab allows it.
-2. Run the images pulled from ECR instead of locally built ones, so the EC2 host only needs `docker pull` and `docker run`.
-3. Put an Application Load Balancer in front, with path routing `/events*` to event-service and `/tickets*` to ticket-service. Only the load balancer would accept public HTTP traffic.
+1. Ganti penyimpanan di memori dengan SQLite pada volume Docker di host EC2 agar tiket bertahan ketika container dimulai ulang. Basis data terkelola dapat dipertimbangkan jika lab mengizinkannya.
+2. Jalankan image dari ECR dengan `docker pull` dan `docker run` pada host EC2.
+3. Gunakan Application Load Balancer sebagai satu-satunya jalur HTTP publik. Rute `/events*` menuju event-service dan `/tickets*` menuju ticket-service.
 
-## Phase 3 (planned, follows the lab's Phase 5 to 9)
+## Tahap 3 (rencana, mengikuti fase lab 5–9)
 
-1. Move the containers to Amazon ECS with one task definition and one service per microservice, so each can scale on its own.
-2. Add a CI/CD pipeline with CodeCommit (or another Git source), CodePipeline, and CodeDeploy so a push to the repository rebuilds the image and deploys it.
+1. Pindahkan container ke Amazon ECS dengan satu task definition dan satu layanan untuk setiap microservice agar masing-masing dapat diskalakan secara mandiri.
+2. Tambahkan pipeline CI/CD dengan CodeCommit atau sumber Git lain, CodePipeline, dan CodeDeploy. Push ke repositori akan memicu pembangunan image dan deployment.
 
-## Cost and budget
+## Biaya dan anggaran
 
-The lab budget is USD 40 and cannot be reset. The main running cost is the Cloud9 `t3.small` instance, which hibernates after 30 minutes without activity. ECR storage for two images of about 18 MB each is far below USD 0.01 per month. End the lab session after each work session to stop the clock.
+Anggaran lab sebesar USD 40 dan tidak dapat diatur ulang. Biaya utama berasal dari instance `t3.small` Cloud9, yang masuk hibernasi setelah 30 menit tanpa aktivitas. Catatan proyek memperkirakan biaya penyimpanan dua image ECR yang masing-masing berukuran sekitar 18 MB jauh di bawah USD 0,01 per bulan. Akhiri sesi lab setelah bekerja untuk menghentikan penghitung waktu.

@@ -1,9 +1,9 @@
-"""ticket-service: CRUD for the Ticket entity (one booking = one Ticket).
+"""ticket-service menyediakan CRUD untuk entitas Ticket. Satu Ticket mewakili satu pemesanan.
 
-Before creating a ticket it calls event-service to check that the event exists.
-Storage is in memory for the Week 12 starter. See docs/deployment-plan.md for
-the planned persistent store.
-Standard library only, so the image needs no pip install.
+Layanan memeriksa keberadaan acara melalui event-service sebelum membuat tiket.
+Implementasi Minggu 12 menyimpan tiket di memori. Rencana penyimpanan
+persisten tersedia di docs/deployment-plan.md.
+Layanan hanya memakai pustaka standar Python.
 """
 import json
 import os
@@ -79,7 +79,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(400, {"error": "quantity must be a positive integer"})
         try:
             event = fetch_event(body["eventId"])
-        except Exception as e:  # event-service down
+        except Exception as e:  # event-service tidak tersedia
             return self._send(503, {"error": f"event-service unavailable: {e}"})
         if event is None:
             return self._send(404, {"error": "event not found"})

@@ -1,6 +1,6 @@
-"""event-service: read-only catalog of events that tickets can be booked for.
+"""event-service menyediakan katalog baca-saja untuk acara yang dapat dipesan.
 
-Standard library only, so the image needs no pip install.
+Layanan hanya memakai pustaka standar Python.
 """
 import json
 import os

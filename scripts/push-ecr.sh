@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Create ECR repos (if missing), tag, and push both images. Run on Cloud9.
+# Buat repositori ECR jika perlu, beri tag, lalu unggah kedua image dari Cloud9.
 set -euo pipefail
 REGION=${AWS_REGION:-us-east-1}
 ACCOUNT=$(aws sts get-caller-identity --query Account --output text)

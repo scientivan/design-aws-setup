@@ -1,45 +1,45 @@
-# API specification
+# Spesifikasi API
 
-All bodies are JSON. Timestamps are ISO 8601 in UTC.
+Isi permintaan dan respons menggunakan JSON. Waktu dicatat dalam format ISO 8601 UTC.
 
-## Data entity `Ticket`
+## Entitas data Ticket
 
-One `Ticket` record is one booking for one event.
+Satu rekaman `Ticket` mewakili satu pemesanan untuk satu acara.
 
-| Field | Type | Notes |
+| Kolom | Tipe | Aturan |
 |---|---|---|
-| `ticketId` | string | Generated, format `tkt-` plus 8 hex characters. Primary key |
-| `eventId` | string | Must exist in event-service, checked on create |
-| `eventName` | string | Copied from event-service at booking time |
-| `buyerName` | string | Required on create |
-| `buyerEmail` | string | Optional |
-| `quantity` | integer | Default 1, must be at least 1 |
-| `totalPrice` | integer | Event price in IDR times quantity |
-| `status` | string | `BOOKED` on create, can change to `PAID` or `CANCELLED` |
-| `createdAt` | string | Set on create |
-| `updatedAt` | string | Set on create and on every update |
+| `ticketId` | string | Kunci utama yang dibuat otomatis dengan awalan `tkt-` dan delapan karakter heksadesimal |
+| `eventId` | string | Wajib dan harus terdaftar di event-service saat pemesanan dibuat |
+| `eventName` | string | Disalin dari event-service saat pemesanan dibuat |
+| `buyerName` | string | Wajib saat pembuatan |
+| `buyerEmail` | string | Opsional |
+| `quantity` | integer | Minimal 1, dengan nilai bawaan 1 |
+| `totalPrice` | integer | Harga acara dalam IDR dikali jumlah tiket |
+| `status` | string | `BOOKED` saat dibuat dan dapat diubah ke `PAID` atau `CANCELLED` |
+| `createdAt` | string | Waktu pembuatan |
+| `updatedAt` | string | Waktu pembuatan atau pembaruan terakhir |
 
-Events are reference data owned by event-service (`eventId`, `name`, `date`, `venue`, `capacity`, `price`). They are not a second CRUD entity.
+event-service memiliki data acuan baca-saja dengan kolom `eventId`, `name`, `date`, `venue`, `capacity`, dan `price`. CRUD hanya berlaku untuk entitas Ticket.
 
-## Four CRUD endpoints (ticket-service, port 8082)
+## Empat endpoint CRUD pada ticket-service (port 8082)
 
-| Operation | Request | Success | Errors |
+| Operasi | Permintaan | Sukses | Kesalahan |
 |---|---|---|---|
-| Create | `POST /tickets` with `{"eventId","buyerName","buyerEmail"?,"quantity"?}` | 201 and the new Ticket | 400 missing field or bad quantity, 404 unknown event, 503 event-service unreachable |
-| Read | `GET /tickets/{ticketId}` | 200 and the Ticket | 404 |
-| Update | `PUT /tickets/{ticketId}` with any of `status`, `buyerName`, `buyerEmail` | 200 and the updated Ticket | 400 bad status or JSON, 404 |
-| Delete | `DELETE /tickets/{ticketId}` | 204 with no body | 404 |
+| Buat | `POST /tickets` dengan `eventId` dan `buyerName`. `buyerEmail` dan `quantity` bersifat opsional | 201 dan Ticket baru | 400 kolom wajib atau jumlah tiket tidak valid, 404 acara tidak ditemukan, 503 event-service tidak tersedia |
+| Baca | `GET /tickets/{ticketId}` | 200 dan Ticket | 404 tiket tidak ditemukan |
+| Ubah | `PUT /tickets/{ticketId}` dengan `status`, `buyerName`, atau `buyerEmail` | 200 dan Ticket yang diperbarui | 400 status atau JSON tidak valid, 404 tiket tidak ditemukan |
+| Hapus | `DELETE /tickets/{ticketId}` | 204 tanpa isi respons | 404 tiket tidak ditemukan |
 
-Extra routes are `GET /tickets` (list) and `GET /health`.
+Rute tambahan adalah `GET /tickets` untuk daftar tiket dan `GET /health` untuk pemeriksaan layanan.
 
 ## event-service (port 8081)
 
-| Request | Response |
+| Permintaan | Respons |
 |---|---|
-| `GET /events` | 200 and the list of events |
-| `GET /events/{eventId}` | 200 and one event, or 404 |
-| `GET /health` | 200 `{"service":"event-service","status":"ok"}` |
+| `GET /events` | 200 dan daftar acara |
+| `GET /events/{eventId}` | 200 dan detail acara, atau 404 jika acara tidak ditemukan |
+| `GET /health` | 200 dan `{"service":"event-service","status":"ok"}` |
 
-## Service to service call
+## Permintaan antarlayanan
 
-On `POST /tickets`, ticket-service calls `GET {EVENT_SERVICE_URL}/events/{eventId}` with a 3 second timeout. In Docker the URL is `http://event-service:8081`, resolved by the user-defined bridge network `ticketing-net`.
+Saat menerima `POST /tickets`, ticket-service memanggil `GET {EVENT_SERVICE_URL}/events/{eventId}` dengan batas waktu tiga detik. Di Docker, jaringan bridge `ticketing-net` membuat `http://event-service:8081` dapat diakses dengan nama container.

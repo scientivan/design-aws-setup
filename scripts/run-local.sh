@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build both images and run them on one Docker network (works on Cloud9 or any Docker host).
+# Bangun dan jalankan kedua container pada satu jaringan di Cloud9 atau host Docker lain.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 docker build -t event-service ./services/event-service

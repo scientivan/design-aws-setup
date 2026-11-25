@@ -1,52 +1,56 @@
-# Ticketing on AWS (Track B, Containers)
+# Ticketing di AWS (Jalur B, Container)
 
-Week 12 project for the Cloud Computing course. The use case is event ticketing. People browse a small catalog of events and book tickets for one of them. The app is split into two containerized services that run with Docker on an EC2 host and are stored as images in Amazon ECR.
+Proyek individu Minggu 12 mata kuliah Komputasi Awan. Pengguna melihat katalog acara kampus dan memesan tiket. Dua layanan berjalan sebagai container Docker pada EC2. Image keduanya tersedia di repositori privat Amazon ECR.
 
-| Item | Choice |
+| Aspek | Pilihan |
 |---|---|
-| Use case | Event ticketing |
-| Track | B (EC2 + Docker + ECR) |
-| Data entity | `Ticket` (one booking) |
-| Services | `event-service` (event catalog, read only) and `ticket-service` (Ticket CRUD) |
-| AWS environment | AWS Academy Lab Project "Microservices and CI/CD Pipeline Builder" (course 195218), region `us-east-1` |
+| Kasus penggunaan | Pemesanan tiket acara kampus |
+| Jalur | B (EC2 + Docker + ECR) |
+| Entitas data | `Ticket` (satu pemesanan) |
+| Layanan | `event-service` untuk katalog baca-saja dan `ticket-service` untuk CRUD tiket |
+| Lingkungan AWS | AWS Academy Lab Project “Microservices and CI/CD Pipeline Builder” (kelas 195218), wilayah `us-east-1` |
 
-## Status (Week 12)
+[Briefing Minggu 12 dalam bahasa Indonesia](docs/briefing-minggu-12-id.pdf)
 
-Both services build, run, and pass the CRUD test on the Cloud9 EC2 host, and both images are pushed to ECR. Evidence is in `evidence/`. Storage is in memory for now. See `docs/deployment-plan.md` for what comes next.
+## Status Minggu 12
 
-## Repository layout
+Kedua image dibangun, dijalankan sebagai container pada host EC2 Cloud9, dan diunggah ke ECR. Uji CRUD dijalankan melalui localhost di dalam instance. Pemesanan tersimpan di memori dan port 8081 serta 8082 belum terbuka ke internet.
 
-| Path | Content |
+## Struktur repositori
+
+| Lokasi | Isi |
 |---|---|
-| `services/event-service/` | `app.py` and `Dockerfile` for the event catalog (port 8081) |
-| `services/ticket-service/` | `app.py` and `Dockerfile` for Ticket CRUD (port 8082) |
-| `scripts/run-local.sh` | Builds both images and runs them on one Docker network |
-| `scripts/test-crud.sh` | Health checks plus the four Ticket CRUD calls |
-| `scripts/push-ecr.sh` | Creates the ECR repositories if missing, then tags and pushes both images |
-| `docs/api-spec.md` | Endpoints, request and response shapes, status codes |
-| `docs/deployment-plan.md` | How it is deployed now and the planned next phases |
-| `docs/CODEX_HANDOFF.md` | Facts and instructions for the agent that writes the diagram, design brief, and evidence report |
-| `evidence/outputs/` | Raw command outputs captured on AWS |
-| `evidence/screenshots/` | AWS console and Cloud9 screenshots |
+| `services/event-service/` | Kode dan Dockerfile untuk katalog acara pada port 8081 |
+| `services/ticket-service/` | Kode dan Dockerfile untuk CRUD tiket pada port 8082 |
+| `scripts/run-local.sh` | Membangun image dan menjalankan kedua container pada satu jaringan Docker |
+| `scripts/test-crud.sh` | Memeriksa respons layanan dan menjalankan uji CRUD |
+| `scripts/push-ecr.sh` | Membuat repositori ECR jika perlu, memberi tag, dan mengunggah image |
+| [Spesifikasi API](docs/api-spec.md) | Entitas, endpoint, dan kode status |
+| [Rencana deployment](docs/deployment-plan.md) | Implementasi saat ini dan tahap berikutnya |
+| [Catatan serah terima](docs/CODEX_HANDOFF.md) | Sumber fakta untuk deliverable |
+| `evidence/` | Keluaran perintah asli dan tangkapan layar AWS |
+| [Deliverable Minggu 12](deliverables/) | Diagram arsitektur, ringkasan desain, dan laporan bukti AWS |
 
-## Run it
+## Menjalankan proyek
 
-Requirements are Docker, and the AWS CLI for the push step. The services use only the Python standard library, so there is no `pip install`.
+Gunakan Docker. Langkah unggah juga membutuhkan AWS CLI dan kredensial AWS, misalnya kredensial sementara dari Cloud9. Kedua layanan hanya memakai pustaka standar Python.
 
 ```bash
-./scripts/run-local.sh        # build and start both containers
-./scripts/test-crud.sh        # expect HTTP 201, 200, 200, 204, then 404
-./scripts/push-ecr.sh         # push to ECR (needs AWS credentials, e.g. on Cloud9)
+./scripts/run-local.sh
+./scripts/test-crud.sh
+./scripts/push-ecr.sh
 ```
 
-## Endpoints
+Untuk CRUD yang berhasil, kode status yang diharapkan adalah 201 saat membuat, 200 saat membaca, 200 saat mengubah, dan 204 saat menghapus. Membaca kembali tiket yang sudah dihapus menghasilkan 404.
 
-| Service | Method and path | Purpose |
+## Endpoint
+
+| Layanan | Metode dan path | Fungsi |
 |---|---|---|
-| event-service | `GET /events`, `GET /events/{eventId}` | Event catalog |
-| ticket-service | `POST /tickets` | Create (book) a ticket |
-| ticket-service | `GET /tickets/{ticketId}` | Read one ticket |
-| ticket-service | `PUT /tickets/{ticketId}` | Update status or buyer data |
-| ticket-service | `DELETE /tickets/{ticketId}` | Delete (cancel) a ticket |
+| event-service | `GET /events`, `GET /events/{eventId}` | Membaca katalog dan detail acara |
+| ticket-service | `POST /tickets` | Membuat pemesanan |
+| ticket-service | `GET /tickets/{ticketId}` | Membaca satu pemesanan |
+| ticket-service | `PUT /tickets/{ticketId}` | Mengubah status atau data pembeli |
+| ticket-service | `DELETE /tickets/{ticketId}` | Menghapus pemesanan |
 
-Both services also expose `GET /health`. `ticket-service` additionally has `GET /tickets` to list all tickets. Full details are in `docs/api-spec.md`.
+Kedua layanan menyediakan `GET /health`. Daftar tiket tersedia melalui `GET /tickets`.
