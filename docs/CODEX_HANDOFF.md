@@ -64,7 +64,7 @@ Use case is event ticketing for campus events. Track B (EC2, Docker, ECR). Reaso
 | `04-ec2-instances-running.jpg` | EC2 list with `aws-cloud9-MicroservicesIDE` t3.small running and 3/3 checks passed |
 | `05-cloud9-environment.jpg` | Cloud9 environment `MicroservicesIDE`, EC2 instance, SSH connection |
 
-The screenshots show the lab user email in the console header. Crop or blur it before the evidence goes anywhere public.
+The screenshots show the owner's lab user email in the console header. The owner approved keeping it visible, so no blurring is needed.
 
 ## Known gaps (do not hide them)
 
